@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hritisha Hotels - Premium Stay Experience</title>
+    <style>
+        /* --- GLOBAL STYLES & RESET --- */
+        :root {
+            --blue-gradient-start: #1e3c72;
+            --blue-gradient-end: #2a5298;
+            --gold-accent: #ffd700;
+            --purple-gradient-start: #667eea;
+            --purple-gradient-end: #764ba2;
+            --white-color: #ffffff;
+            --light-gray: #f4f4f4;
+            --dark-gray: #333;
+            --success-green: #28a745;
+            --danger-red: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 20px;
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--blue-gradient-start);
+            padding-top: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--blue-gradient-start), var(--blue-gradient-end));
+            color: var(--white-color);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-gold {
+            background-color: var(--gold-accent);
+            color: var(--dark-gray);
+        }
+
+        .btn-gold:hover {
+            background-color: #e6c300;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        /* --- NAVIGATION BAR --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: linear-gradient(to right, var(--blue-gradient-start), var(--blue-gradient-end));
+            color: var(--white-color);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .navbar .user-info { display: none; align-items: center; flex-wrap: wrap; }
+        .navbar .user-info .user-nav { display: flex; align-items: center; }
+        .navbar .user-info .user-nav a { margin-left: 20px; font-size: 1.1rem; color: var(--white-color); text-decoration: none; }
+        .navbar .user-info .user-nav a:hover { color: var(--gold-accent); }
+        .navbar .user-info #logout-btn { margin-left: 25px; border: 1px solid var(--white-color); background: transparent; }
+        .navbar .user-info #logout-btn:hover { background: var(--white-color); color: var(--blue-gradient-start); }
+        .navbar .login-buttons { display: flex; align-items: center; flex-wrap: wrap; }
+        .navbar .login-buttons .btn { margin-left: 10px; background: rgba(255, 255, 255, 0.1); color: var(--white-color); border: 1px solid var(--white-color); }
+        .navbar .login-buttons .btn:hover { background: var(--white-color); color: var(--blue-gradient-start); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            background: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center/cover;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--white-color);
+            text-align: center;
+        }
+
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); }
+        .hero-content { position: relative; z-index: 1; }
+        .hero-content h1 { font-size: 4rem; margin-bottom: 0.5rem; text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); }
+        .hero-content p { font-size: 1.5rem; margin-bottom: 2rem; text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); }
+
+        /* --- SECTIONS & CARDS --- */
+        .section { padding: 80px 0; }
+        .card { background: var(--white-color); padding: 40px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin-top: -80px; position: relative; z-index: 10; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: flex-end; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { margin-bottom: 8px; font-weight: bold; color: #555; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; }
+
+        /* --- ROOMS SECTION --- */
+        .rooms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-top: 40px; }
+        .room-card { background: var(--white-color); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; display: flex; flex-direction: column; }
+        .room-card:hover { transform: translateY(-10px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); }
+        .room-card img { width: 100%; height: 250px; object-fit: cover; }
+        .room-card-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+        .room-card h3 { color: var(--blue-gradient-start); margin-bottom: 10px; }
+        .room-card .price { font-size: 1.5rem; font-weight: bold; color: var(--dark-gray); margin-bottom: 15px; }
+        .room-card .price span { font-size: 1rem; font-weight: normal; color: #777; }
+        .room-card .features { list-style: none; padding: 0; margin: 15px 0; color: #555; flex-grow: 1; }
+        .room-card .features li { margin-bottom: 8px; padding-left: 20px; position: relative; }
+        .room-card .features li::before { content: '✓'; color: var(--success-green); position: absolute; left: 0; font-weight: bold; }
+
+        /* --- OWNER & CONTACT SECTIONS --- */
+        #owner { background: linear-gradient(to right, var(--purple-gradient-start), var(--purple-gradient-end)); color: var(--white-color); }
+        #owner h2 { color: var(--white-color); }
+        .owner-details-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 40px; }
+        .owner-detail-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); padding: 25px; border-radius: 10px; text-align: center; }
+
+        /* --- MODAL SYSTEM --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 2000; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content { background: var(--white-color); padding: 40px; border-radius: 10px; width: 90%; max-width: 500px; position: relative; transform: scale(0.95); transition: transform 0.3s ease; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-content.modal-lg { max-width: 900px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        .modal-title { font-size: 1.8rem; color: var(--blue-gradient-start); }
+        .close-modal { font-size: 2.5rem; font-weight: bold; color: #aaa; cursor: pointer; line-height: 1; }
+        .close-modal:hover { color: var(--dark-gray); }
+        .booking-summary { background: #f9f9f9; border-left: 4px solid var(--blue-gradient-start); padding: 15px; margin-top: 15px; border-radius: 4px; }
+        .booking-summary .total { font-weight: bold; font-size: 1.2rem; color: var(--blue-gradient-end); }
+
+        /* --- DASHBOARD STYLES --- */
+        .dashboard { display: none; padding: 100px 20px 40px; min-height: 100vh; }
+        .dashboard-header { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid var(--blue-gradient-start); }
+        .dashboard-header h1 { font-size: 2.5rem; color: var(--blue-gradient-start); }
+        .dashboard-tabs { display: flex; margin-bottom: 30px; border-bottom: 1px solid #ccc; flex-wrap: wrap; }
+        .dashboard-tabs .tab-button { padding: 15px 25px; cursor: pointer; border: none; background: none; font-size: 1.1rem; position: relative; color: #555; transition: color 0.3s ease; }
+        .dashboard-tabs .tab-button::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px; background: var(--blue-gradient-end); transform: scaleX(0); transition: transform 0.3s ease; }
+        .dashboard-tabs .tab-button.active { color: var(--blue-gradient-end); }
+        .dashboard-tabs .tab-button.active::after { transform: scaleX(1); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .table-container { overflow-x: auto; background: var(--white-color); padding: 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .table-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .table-controls input[type="search"] { padding: 10px; border-radius: 5px; border: 1px solid #ccc; width: 250px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 15px; border-bottom: 1px solid #e0e0e0; vertical-align: middle; }
+        th { background-color: var(--light-gray); font-weight: bold; color: var(--dark-gray); }
+        tr:hover { background-color: #f9f9f9; }
+        td .btn-sm { padding: 5px 10px; font-size: 0.9rem; margin-right: 5px; }
+        .table-room-image { width: 100px; height: 60px; object-fit: cover; border-radius: 4px; }
+        .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+        .status-confirmed { background-color: #d4edda; color: #155724; }
+        .status-pending { background-color: #fff3cd; color: #856404; }
+        .status-cancelled { background-color: #f8d7da; color: #721c24; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .stat-card { background: linear-gradient(to right, var(--blue-gradient-start), var(--blue-gradient-end)); color: var(--white-color); padding: 25px; border-radius: 8px; }
+        .stat-card h3 { color: var(--white-color); opacity: 0.8; font-size: 1.1rem; }
+        .stat-card .stat-value { font-size: 2.5rem; font-weight: bold; }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; align-items: flex-start; padding: 1rem; }
+            .navbar .logo { margin-bottom: 1rem; }
+            .navbar .user-info { width: 100%; justify-content: space-between; }
+            .navbar .user-info .user-nav { margin-bottom: 0.5rem; }
+            .navbar .login-buttons { width: 100%; flex-direction: column; align-items: stretch; gap: 0.5rem; }
+            .navbar .login-buttons .btn { margin: 0; }
+            
+            .hero-content h1 { font-size: 2.5rem; }
+            .hero-content p { font-size: 1.2rem; }
+            h2 { font-size: 2rem; }
+            
+            .form-grid, .owner-details-grid, .rooms-grid { grid-template-columns: 1fr; }
+            .card { padding: 20px; }
+
+            .dashboard { padding: 90px 10px 20px; }
+            .dashboard-header h1 { font-size: 2rem; }
+            .dashboard-tabs { flex-direction: column; align-items: stretch; }
+            .dashboard-tabs .tab-button { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ======================= GLOBAL HEADER ======================= -->
+    <header class="navbar">
+        <div class="logo">Hritisha Hotels</div>
+        <div class="user-info">
+            <span id="user-welcome-message"></span>
+            <nav class="user-nav">
+                <a href="#" id="view-website-btn">View Website</a>
+                <a href="#" id="view-dashboard-btn">Dashboard</a>
+            </nav>
+            <button class="btn" id="logout-btn">Logout</button>
+        </div>
+        <div class="login-buttons">
+            <button class="btn" id="customer-login-btn">Customer Login</button>
+            <button class="btn" id="admin-login-btn">Admin Login</button>
+            <button class="btn" id="owner-login-btn">Owner Login</button>
+        </div>
+    </header>
+
+    <!-- ======================= MAIN WEBSITE VIEW ======================= -->
+    <div id="main-website">
+        <main>
+            <section id="home" class="hero">
+                <div class="hero-content"><h1>Welcome to Hritisha Hotels</h1><p>Experience luxury and comfort like never before</p><a href="#search" class="btn btn-gold">Explore Rooms</a></div>
+            </section>
+            <section id="search" class="section">
+                <div class="container"><div class="card"><h2>Find Your Perfect Room</h2><form id="search-form" class="form-grid" style="margin-top: 20px;"><div class="form-group"><label for="check-in">Check-in Date</label><input type="date" id="check-in" name="check-in"></div><div class="form-group"><label for="check-out">Check-out Date</label><input type="date" id="check-out" name="check-out"></div><div class="form-group"><label for="guests">Guests</label><select id="guests" name="guests"><option value="1">1 Guest</option><option value="2">2 Guests</option><option value="3">3 Guests</option><option value="4">4 Guests</option></select></div><div class="form-group"><label for="max-price">Max Price (₹)</label><input type="number" id="max-price" name="max-price" placeholder="e.g., 10000"></div><button type="submit" class="btn btn-primary" style="height: 48px;">Search Rooms</button></form></div></div>
+            </section>
+            <section id="rooms" class="section">
+                <div class="container"><h2>Our Premium Rooms</h2><div id="rooms-grid" class="rooms-grid"></div></div>
+            </section>
+            <section id="owner" class="section">
+                <div class="container"><h2>Meet Our Owner</h2><div class="owner-details-grid"><div class="owner-detail-card"><h4>Name</h4><p>Hritansh Raj</p></div><div class="owner-detail-card"><h4>Age</h4><p>21 Years</p></div><div class="owner-detail-card"><h4>Mobile</h4><p>+91 9555231426</p></div><div class="owner-detail-card"><h4>Email</h4><p>hritanshraj@gmail.com</p></div><div class="owner-detail-card"><h4>Location</h4><p>Mirzapur, Uttar Pradesh, India</p></div></div></div>
+            </section>
+            <section id="contact" class="section">
+                <div class="container"><div class="card"><h2>Contact Us</h2><form id="contact-form" style="margin-top: 20px;"><div class="form-grid" style="grid-template-columns: 1fr 1fr;"><div class="form-group"><label for="full-name">Full Name</label><input type="text" id="full-name" required></div><div class="form-group"><label for="email">Email</label><input type="email" id="email" required></div></div><div class="form-group" style="margin-top: 20px;"><label for="phone">Phone</label><input type="tel" id="phone"></div><div class="form-group" style="margin-top: 20px;"><label for="message">Message</label><textarea id="message" rows="5" required></textarea></div><button type="submit" class="btn btn-gold" style="margin-top: 20px;">Submit Message</button></form></div></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ======================= DASHBOARD VIEWS ======================= -->
+    <div id="dashboard-container" style="display: none;">
+        <div id="customer-dashboard" class="dashboard"><div class="container"><div class="dashboard-header"><h1>My Bookings</h1><p>View your booking history with Hritisha Hotels.</p></div><div class="table-container"><table id="customer-bookings-table"><thead><tr><th>Booking ID</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Amount</th><th>Status</th></tr></thead><tbody></tbody></table></div></div></div>
+        <div id="admin-dashboard" class="dashboard"><div class="container"><div class="dashboard-header"><h1>Admin Dashboard</h1></div><div class="dashboard-tabs"><button class="tab-button active" data-tab="admin-bookings">Bookings</button><button class="tab-button" data-tab="admin-customers">Customers</button><button class="tab-button" data-tab="admin-rooms">Rooms</button></div><div id="admin-bookings" class="tab-content active"><h2>Manage All Bookings</h2><div class="table-container"><div class="table-controls"><input type="search" placeholder="Search bookings..."></div><table id="admin-bookings-table"><thead><tr><th>ID</th><th>Customer</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div id="admin-customers" class="tab-content"><h2>Manage Customers</h2><div class="table-container"><div class="table-controls"><input type="search" placeholder="Search customers..."><button class="btn btn-primary add-customer-btn">Add Customer</button></div><table id="admin-customers-table"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div id="admin-rooms" class="tab-content"><h2>Manage Rooms</h2><div class="table-container"><div class="table-controls"><input type="search" placeholder="Search rooms..."><button class="btn btn-primary add-room-btn">Add Room</button></div><table id="admin-rooms-table"><thead><tr><th>Image</th><th>Name</th><th>Price/Night</th><th>Features</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div></div></div>
+        <div id="owner-dashboard" class="dashboard"><div class="container"><div class="dashboard-header"><h1>Owner Dashboard</h1></div><div class="dashboard-tabs"><button class="tab-button active" data-tab="owner-overview">Overview</button><button class="tab-button" data-tab="owner-bookings">Bookings</button><button class="tab-button" data-tab="owner-customers">Customers</button><button class="tab-button" data-tab="owner-rooms">Rooms</button><button class="tab-button" data-tab="owner-admins">Admin Mgt</button><button class="tab-button" data-tab="owner-financials">Financials</button><button class="tab-button" data-tab="owner-settings">System</button></div><div id="owner-overview" class="tab-content active"><h2>Hotel Overview</h2><div id="owner-stats-grid" class="stats-grid"></div></div><div id="owner-bookings" class="tab-content"><h2>Manage All Bookings</h2><div class="table-container"><div class="table-controls"><input type="search" placeholder="Search bookings..."></div><table id="owner-bookings-table"><thead><tr><th>ID</th><th>Customer</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div id="owner-customers" class="tab-content"><h2>Manage Customers</h2><div class="table-container"><div class="table-controls"><input type="search" placeholder="Search customers..."><button class="btn btn-primary add-customer-btn">Add Customer</button></div><table id="owner-customers-table"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div id="owner-rooms" class="tab-content"><h2>Manage Rooms</h2><div class="table-container"><div class="table-controls"><input type="search" placeholder="Search rooms..."><button class="btn btn-primary add-room-btn">Add Room</button></div><table id="owner-rooms-table"><thead><tr><th>Image</th><th>Name</th><th>Price/Night</th><th>Features</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div id="owner-admins" class="tab-content"><h2>Manage Admins & Staff</h2><div class="table-container"><div class="table-controls"><input type="search" placeholder="Search admins..."><button class="btn btn-primary" id="add-admin-btn">Add Admin</button></div><table id="owner-admins-table"><thead><tr><th>Username</th><th>Role</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div><div id="owner-financials" class="tab-content"><h2>Financial Control</h2><div class="card" style="margin-top:0;"><h3>Set Room Prices</h3><form id="price-control-form" class="form-grid"></form><button class="btn btn-gold" style="margin-top: 20px;" id="save-prices-btn">Save All Prices</button></div></div><div id="owner-settings" class="tab-content"><h2>System Settings</h2><div class="card" style="margin-top:0;"><h3>System Control</h3><p>Use these tools for system maintenance.</p><button class="btn btn-danger" style="margin-top: 20px;" id="reset-data-btn">Reset All Data</button><p style="font-size: 0.8rem; color: #777; margin-top: 10px;">Warning: This will reset all bookings, users, and rooms to their initial state.</p></div></div></div></div>
+    </div>
+
+    <!-- ======================= MODAL SYSTEM ======================= -->
+    <div id="modal-container" class="modal-overlay"></div>
+    
+    <!-- MODAL TEMPLATES -->
+    <template id="login-modal-template"><div class="modal-content"><div class="modal-header"><h3 class="modal-title">Login</h3><span class="close-modal">×</span></div><form class="login-form"><div class="form-group"><label>Username</label><input type="text" name="username" required></div><div class="form-group"><label>Password</label><input type="password" name="password" required></div><p class="error-message" style="color: red; display: none; margin-bottom: 10px;"></p><p class="demo-creds" style="font-size: 0.9rem; color: #555; margin-bottom: 15px;"></p><button type="submit" class="btn btn-primary" style="width: 100%;">Login</button></form></div></template>
+    <template id="management-modal-template"><div class="modal-content modal-lg"><div class="modal-header"><h3 class="modal-title">Manage Item</h3><span class="close-modal">×</span></div><form class="management-form"><div class="modal-body form-grid"></div><div class="modal-footer" style="margin-top: 20px; text-align: right;"><button type="submit" class="btn btn-primary">Save Changes</button></div></form></div></template>
+    <template id="booking-modal-template"><div class="modal-content"><div class="modal-header"><h3 class="modal-title">Book Your Stay</h3><span class="close-modal">×</span></div><form id="booking-form"><div class="modal-body"><div id="booking-customer-details"></div><div class="form-grid" style="grid-template-columns: 1fr 1fr;"><div class="form-group"><label for="booking-check-in">Check-in</label><input type="date" name="checkIn" id="booking-check-in" required></div><div class="form-group"><label for="booking-check-out">Check-out</label><input type="date" name="checkOut" id="booking-check-out" required></div></div><div class="booking-summary"><p>Room: <b id="summary-room-name"></b></p><p>Price: <span id="summary-room-price"></span> / night</p><hr style="margin: 10px 0; border: 0; border-top: 1px solid #eee;"><p class="total">Total: <span id="summary-total-price">₹0</span> (<span id="summary-total-nights">0</span> Nights)</p></div><p class="error-message" style="color: red; display: none; margin-top: 10px;"></p></div><div class="modal-footer" style="margin-top: 20px; text-align: right;"><button type="submit" class="btn btn-gold">Confirm Booking</button></div></form></div></template>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let DB = {};
+        const initialData = {
+            rooms: [
+                { id: 'R001', name: 'Luxury Suite', price: 8500, features: ['King Size Bed', 'Ocean View', 'Private Balcony', 'Mini Bar', '24/7 Room Service'], image: 'https://imageio.forbes.com/specials-images/imageserve/652f677c88df7c3ac4438c1e/Cariloha-Classic-Bamboo-Mattress/960x0.png?height=776&width=711&fit=bounds' },
+                { id: 'R002', name: 'Deluxe Room', price: 5500, features: ['Queen Size Bed', 'City View', 'Work Desk', 'Free WiFi', 'Complimentary Breakfast'], image: 'https://imageio.forbes.com/specials-images/imageserve/652f603a91415a3d647fc207/Modern-Style-Bedroom/960x0.jpg?format=jpg&width=960' },
+                { id: 'R003', name: 'Premium Suite', price: 12000, features: ['Master Bedroom', 'Living Area', 'Kitchenette', 'Jacuzzi', 'Butler Service'], image: 'https://imageio.forbes.com/specials-images/imageserve/6539f11007194148ff30a333/Dominique-Coffman/960x0.jpg?height=471&width=711&fit=bounds' },
+                { id: 'R004', name: 'Standard Room', price: 3500, features: ['Double Bed', 'Garden View', 'Air Conditioning', 'Free WiFi', 'Daily Housekeeping'], image: 'https://imageio.forbes.com/specials-images/imageserve/652f646c8b486a76cd884933/Ashton-Wood-Bedroom-Color/960x0.jpg?height=477&width=711&fit=bounds' },
+                { id: 'R005', name: 'Executive Suite', price: 9500, features: ['King Size Bed', 'Separate Living Room', 'Work Station', 'Premium Amenities', 'Concierge Service'], image: 'https://imageio.forbes.com/specials-images/imageserve/65d0437d939a0e0acdd53a66/Gillian-Gilles1/960x0.jpg?height=869&width=711&fit=bounds' },
+                { id: 'R006', name: 'Family Room', price: 6500, features: ['Two Double Beds', 'Family Friendly', 'Extra Space', 'Kids Amenities', 'Connecting Rooms Available'], image: 'https://imageio.forbes.com/specials-images/imageserve/652f6171ec0ae0e868d5da9a/Ashton-Woods-Bedroom-2/960x0.jpg?height=469&width=711&fit=bounds' }
+            ],
+            users: [
+                { id: 'C002', username: 'member', password: 'member123', role: 'customer', name: 'Priya Patel', email: 'priya@example.com' },
+                { id: 'U001', username: 'admin', password: 'admin123', role: 'admin', name: 'Admin User' },
+                { id: 'U002', username: 'Hritansh', password: 'Hritisha1004', role: 'owner', name: 'Hritansh Raj' },
+                { id: 'U003', username: 'Manisha', password: 'ILOVEYOU', role: 'owner', name: 'Manisha Markam' }
+            ],
+            customers: [ { id: 'C001', name: 'Rahul Sharma', email: 'rahul@example.com', phone: '1234567890' }, { id: 'C002', name: 'Priya Patel', email: 'priya@example.com', phone: '9876543210' } ],
+            bookings: [ { id: 'B001', customerId: 'C001', roomId: 'R001', checkIn: '2024-10-20', checkOut: '2024-10-23', totalAmount: 25500, status: 'Confirmed' } ],
+        };
+
+        let loggedInUser = null;
+        const modalContainer = document.getElementById('modal-container');
+
+        // --- Core Data & Utility Functions ---
+        function loadDB() { DB = JSON.parse(localStorage.getItem('hritisha_hotel_db') || JSON.stringify(initialData)); }
+        function saveDB() { localStorage.setItem('hritisha_hotel_db', JSON.stringify(DB)); }
+        function generateId(prefix) { const collections = { C: 'customers', R: 'rooms', U: 'users', B: 'bookings' }; const collection = DB[collections[prefix]]; return collection ? prefix + (Math.max(0, ...collection.map(item => parseInt(item.id.slice(1)))) + 1).toString().padStart(3, '0') : null; }
+        function showAlert(message, type = 'success') { const alertBox = document.createElement('div'); Object.assign(alertBox.style, { position: 'fixed', top: '80px', right: '20px', padding: '15px 25px', borderRadius: '5px', color: 'white', zIndex: '9999', background: type === 'success' ? 'var(--success-green)' : 'var(--danger-red)', boxShadow: '0 5px 15px rgba(0,0,0,0.2)', maxWidth: '350px' }); alertBox.innerHTML = message; document.body.appendChild(alertBox); setTimeout(() => alertBox.remove(), 8000); }
+        function showView(view) { document.getElementById('main-website').style.display = (view === 'website') ? 'block' : 'none'; document.getElementById('dashboard-container').style.display = (view !== 'website') ? 'block' : 'none'; document.querySelectorAll('.dashboard').forEach(d => d.style.display = 'none'); if (view !== 'website') document.getElementById(`${view}-dashboard`).style.display = 'block'; }
+        
+        // --- Robust Date Parsing ---
+        function parseDateUTC(dateString) { if (!dateString) return null; const parts = dateString.split('-').map(p => parseInt(p, 10)); return new Date(Date.UTC(parts[0], parts[1] - 1, parts[2])); }
+
+        // --- Rendering Functions ---
+        const renderAllRooms = (roomsToRender = DB.rooms) => { const grid = document.getElementById('rooms-grid'); grid.innerHTML = roomsToRender.length === 0 ? '<p>No rooms match your criteria.</p>' : roomsToRender.map(room => `<div class="room-card"><img src="${room.image}" alt="${room.name}" onerror="this.onerror=null;this.src='https://via.placeholder.com/400x250.png?text=Image+Not+Found';"><div class="room-card-content"><h3>${room.name}</h3><p class="price">₹${room.price.toLocaleString('en-IN')} <span>/ night</span></p><ul class="features">${room.features.map(f => `<li>${f}</li>`).join('')}</ul><button class="btn btn-primary book-now-btn" data-room-id="${room.id}">Book Now</button></div></div>`).join(''); };
+        const renderTable = (tableId, data, rowTemplate) => { const tableBody = document.querySelector(`#${tableId} tbody`); if (tableBody) tableBody.innerHTML = data.map(rowTemplate).join(''); };
+        const bookingRow = b => { const c = DB.customers.find(cust => cust.id === b.customerId) || {}; const r = DB.rooms.find(room => room.id === b.roomId) || {}; return `<tr><td>${b.id}</td><td>${c.name||'N/A'}</td><td>${r.name||'N/A'}</td><td>${b.checkIn}</td><td>${b.checkOut}</td><td>₹${b.totalAmount.toLocaleString('en-IN')}</td><td><span class="status-badge status-${b.status.toLowerCase()}">${b.status}</span></td><td><button class="btn btn-sm btn-primary edit-booking-btn" data-id="${b.id}">Edit</button></td></tr>`; };
+        const customerRow = c => `<tr><td>${c.id}</td><td>${c.name}</td><td>${c.email}</td><td>${c.phone||'N/A'}</td><td><button class="btn btn-sm btn-danger delete-customer-btn" data-id="${c.id}">Delete</button></td></tr>`;
+        const roomRow = r => `<tr><td><img src="${r.image}" class="table-room-image"></td><td>${r.name}</td><td>₹${r.price.toLocaleString('en-IN')}</td><td style="font-size: 0.9em;">${r.features.join(', ')}</td><td><button class="btn btn-sm btn-primary edit-room-btn" data-id="${r.id}">Edit</button><button class="btn btn-sm btn-danger delete-room-btn" data-id="${r.id}">Delete</button></td></tr>`;
+        const adminRow = u => `<tr><td>${u.username}</td><td><span class="status-badge" style="background-color: #eee;">${u.role}</span></td><td>${u.role !== 'owner' ? `<button class="btn btn-sm btn-danger delete-admin-btn" data-id="${u.id}">Remove</button>` : 'Owner'}</td></tr>`;
+        
+        function renderAllAdminViews() { renderTable('admin-bookings-table', DB.bookings, bookingRow); renderTable('admin-customers-table', DB.customers, customerRow); renderTable('admin-rooms-table', DB.rooms, roomRow); }
+        function renderOwnerTabContent(tabId) {
+            switch(tabId) {
+                case 'owner-overview': document.getElementById('owner-stats-grid').innerHTML = `<div class="stat-card"><h3>Total Revenue</h3><div class="stat-value">₹${DB.bookings.reduce((s, b) => s + (b.status === 'Confirmed' ? b.totalAmount : 0), 0).toLocaleString('en-IN')}</div></div><div class="stat-card"><h3>Total Bookings</h3><div class="stat-value">${DB.bookings.length}</div></div><div class="stat-card"><h3>Customers</h3><div class="stat-value">${DB.customers.length}</div></div><div class="stat-card"><h3>Rooms</h3><div class="stat-value">${DB.rooms.length}</div></div>`; break;
+                case 'owner-bookings': renderTable('owner-bookings-table', DB.bookings, bookingRow); break;
+                case 'owner-customers': renderTable('owner-customers-table', DB.customers, customerRow); break;
+                case 'owner-rooms': renderTable('owner-rooms-table', DB.rooms, roomRow); break;
+                case 'owner-admins': renderTable('owner-admins-table', DB.users.filter(u => ['admin', 'owner'].includes(u.role)), adminRow); break;
+                case 'owner-financials': document.getElementById('price-control-form').innerHTML = DB.rooms.map(r => `<div class="form-group"><label for="price-${r.id}">${r.name}</label><input type="number" id="price-${r.id}" data-id="${r.id}" value="${r.price}" class="price-input"></div>`).join(''); break;
+            }
+        }
+
+        // --- Core UI Logic: Modals, Tabs, Login/Logout ---
+        function openModal(content) { modalContainer.innerHTML = ''; modalContainer.appendChild(content); modalContainer.classList.add('active'); }
+        function closeModal() { modalContainer.classList.remove('active'); }
+
+        function showLoginModal(type) {
+            const template = document.getElementById('login-modal-template').content.cloneNode(true);
+            const creds = { customer: { title: 'Customer Login', demo: '<b>Demo:</b> <code>member</code> / <code>member123</code>' }, admin: { title: 'Admin Login', demo: '<b>Demo:</b> <code>admin</code> / <code>admin123</code>', color: 'var(--success-green)' }, owner: { title: 'Owner Login', demo: '<b>Owner:</b> Use owner credentials.', color: 'var(--gold-accent)'} };
+            const config = creds[type];
+            template.querySelector('.modal-title').textContent = config.title;
+            if(config.color) template.querySelector('.modal-title').style.color = config.color;
+            template.querySelector('.demo-creds').innerHTML = config.demo;
+            template.querySelector('.login-form').addEventListener('submit', handleLogin);
+            openModal(template);
+        }
+        
+        function handleManagementFormSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const type = form.dataset.type, id = form.dataset.id;
+            const data = Object.fromEntries(new FormData(form).entries());
+            const actions = {
+                customer: { collection: 'customers', idPrefix: 'C', render: () => { renderAllAdminViews(); renderOwnerTabContent('owner-customers'); }},
+                room: { collection: 'rooms', idPrefix: 'R', render: () => { renderAllRooms(); renderAllAdminViews(); renderOwnerTabContent('owner-rooms'); }},
+                admin: { collection: 'users', idPrefix: 'U', render: () => renderOwnerTabContent('owner-admins') },
+                booking: { collection: 'bookings', render: () => { renderAllAdminViews(); renderOwnerTabContent('owner-bookings'); if(loggedInUser.role === 'customer') updateUIForLogin(); } }
+            };
+            const config = actions[type];
+            if (type === 'room') { data.price = parseFloat(data.price); data.features = data.features.split(',').map(f => f.trim()); }
+            if (type === 'admin') data.role = 'admin';
+            if (id) {
+                const index = DB[config.collection].findIndex(item => item.id === id);
+                if (index > -1) DB[config.collection][index] = { ...DB[config.collection][index], ...data };
+            } else { data.id = generateId(config.idPrefix); DB[config.collection].push(data); }
+            saveDB(); closeModal();
+            showAlert(`${type.charAt(0).toUpperCase() + type.slice(1)} saved successfully!`);
+            config.render();
+        }
+
+        function showManagementModal(config) {
+            const template = document.getElementById('management-modal-template').content.cloneNode(true);
+            template.querySelector('.modal-title').textContent = config.title;
+            const form = template.querySelector('.management-form');
+            form.dataset.type = config.type;
+            if (config.id) form.dataset.id = config.id;
+            template.querySelector('.modal-body').innerHTML = config.fields;
+            form.addEventListener('submit', handleManagementFormSubmit);
+            openModal(template);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const form = e.target;
+            const user = DB.users.find(u => u.username === form.username.value && u.password === form.password.value);
+            if (user) {
+                loggedInUser = user;
+                localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+                updateUIForLogin(); closeModal();
+                showAlert(`Welcome, ${user.name || user.username}!`, 'success');
+            } else {
+                form.querySelector('.error-message').textContent = 'Invalid credentials.';
+                form.querySelector('.error-message').style.display = 'block';
+            }
+        }
+        
+        function handleLogout() { loggedInUser = null; localStorage.removeItem('loggedInUser'); updateUIForLogout(); showAlert('You have been logged out.'); }
+
+        function updateUIForLogin() {
+            document.querySelector('.login-buttons').style.display = 'none';
+            document.querySelector('.user-info').style.display = 'flex';
+            document.getElementById('user-welcome-message').textContent = `Welcome, ${loggedInUser.name || loggedInUser.username}`;
+            if (loggedInUser.role === 'customer') {
+                showView('customer');
+                renderTable('customer-bookings-table', DB.bookings.filter(b => b.customerId === loggedInUser.id), b => {
+                    const room = DB.rooms.find(r => r.id === b.roomId) || {};
+                    return `<tr><td>${b.id}</td><td>${room.name}</td><td>${b.checkIn}</td><td>${b.checkOut}</td><td>₹${b.totalAmount.toLocaleString('en-IN')}</td><td><span class="status-badge status-${b.status.toLowerCase()}">${b.status}</span></td></tr>`;
+                });
+            } else if (loggedInUser.role === 'admin') {
+                showView('admin'); renderAllAdminViews();
+            } else if (loggedInUser.role === 'owner') {
+                showView('owner');
+                const activeTabButton = document.querySelector('#owner-dashboard .tab-button.active');
+                if (activeTabButton) renderOwnerTabContent(activeTabButton.dataset.tab);
+            }
+        }
+        
+        function updateUIForLogout() { showView('website'); document.querySelector('.login-buttons').style.display = 'flex'; document.querySelector('.user-info').style.display = 'none'; }
+
+        function showBookingModal(roomId) {
+            const room = DB.rooms.find(r => r.id === roomId);
+            const template = document.getElementById('booking-modal-template').content.cloneNode(true);
+            template.querySelector('#summary-room-name').textContent = room.name;
+            template.querySelector('#summary-room-price').textContent = `₹${room.price.toLocaleString('en-IN')}`;
+            if (!loggedInUser || loggedInUser.role !== 'customer') {
+                template.querySelector('#booking-customer-details').innerHTML = `<p style="margin-bottom: 15px; font-size: 0.9em; color: #555;">Enter your details to book. An account will be created for you.</p><div class="form-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 15px;"><div class="form-group"><label>Full Name</label><input type="text" name="name" required></div><div class="form-group"><label>Email</label><input type="email" name="email" required></div></div>`;
+            }
+            const checkInInput = template.querySelector('#booking-check-in');
+            const checkOutInput = template.querySelector('#booking-check-out');
+            checkInInput.value = document.getElementById('check-in').value || new Date().toISOString().split('T')[0];
+            checkOutInput.value = document.getElementById('check-out').value;
+            checkInInput.min = new Date().toISOString().split('T')[0];
+
+            const updateSummary = () => {
+                const start = parseDateUTC(checkInInput.value);
+                const end = parseDateUTC(checkOutInput.value);
+                let nights = 0;
+                if (start && end && end > start) {
+                    nights = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+                }
+                template.querySelector('#summary-total-nights').textContent = `${nights} Night${nights !== 1 ? 's' : ''}`;
+                template.querySelector('#summary-total-price').textContent = `₹${(nights * room.price).toLocaleString('en-IN')}`;
+            };
+            
+            template.querySelector('#booking-form').addEventListener('input', updateSummary);
+            updateSummary(); // Initial call
+            template.querySelector('#booking-form').addEventListener('submit', e => handleBookingFormSubmit(e, room));
+            openModal(template);
+        }
+
+        function handleBookingFormSubmit(e, room) {
+            e.preventDefault();
+            const form = e.target;
+            const data = Object.fromEntries(new FormData(form).entries());
+            if (!data.checkIn || !data.checkOut || parseDateUTC(data.checkOut) <= parseDateUTC(data.checkIn)) {
+                form.querySelector('.error-message').textContent = 'Check-out must be after check-in.'; form.querySelector('.error-message').style.display = 'block'; return;
+            }
+            let customerId, isNewGuest = false, guestEmail = '';
+            if (loggedInUser && loggedInUser.role === 'customer') {
+                customerId = loggedInUser.id;
+            } else {
+                let existingCustomer = DB.customers.find(c => c.email === data.email);
+                if(existingCustomer) { customerId = existingCustomer.id; } 
+                else {
+                    isNewGuest = true; guestEmail = data.email;
+                    customerId = generateId('C');
+                    DB.customers.push({ id: customerId, name: data.name, email: data.email, phone: '' });
+                    DB.users.push({ id: customerId, username: data.email, password: 'password123', role: 'customer', name: data.name, email: data.email });
+                }
+            }
+            const nights = Math.ceil((parseDateUTC(data.checkOut) - parseDateUTC(data.checkIn)) / (1000 * 60 * 60 * 24));
+            DB.bookings.push({ id: generateId('B'), customerId, roomId: room.id, checkIn: data.checkIn, checkOut: data.checkOut, totalAmount: nights * room.price, status: 'Pending' });
+            saveDB(); closeModal();
+            const successMessage = isNewGuest ? `Booking request sent! You can log in with your email (<b>${guestEmail}</b>) and the password '<b>password123</b>' to check the status.` : "Booking request sent! Your booking is pending confirmation.";
+            showAlert(successMessage);
+            if(loggedInUser) updateUIForLogin();
+        }
+
+        // --- Event Delegation & Centralized Listeners ---
+        function setupDashboardTabs(dashboardId) {
+            const dashboard = document.getElementById(dashboardId);
+            const tabsContainer = dashboard.querySelector('.dashboard-tabs');
+            tabsContainer.addEventListener('click', e => {
+                const button = e.target.closest('.tab-button');
+                if (button) {
+                    const tabId = button.dataset.tab;
+                    tabsContainer.querySelector('.active').classList.remove('active');
+                    button.classList.add('active');
+                    dashboard.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    dashboard.querySelector(`#${tabId}`).classList.add('active');
+                    if (dashboardId === 'owner-dashboard') {
+                        renderOwnerTabContent(tabId);
+                    }
+                }
+            });
+        }
+        
+        document.body.addEventListener('click', e => {
+            const target = e.target;
+            if (target.matches('.book-now-btn')) showBookingModal(target.dataset.roomId);
+            if (target.matches('.close-modal') || target === modalContainer) closeModal();
+            if (target.matches('.logo') || target.matches('#view-website-btn')) showView('website');
+            if (target.matches('#view-dashboard-btn') && loggedInUser) showView(loggedInUser.role);
+            if (target.matches('#customer-login-btn')) showLoginModal('customer');
+            if (target.matches('#admin-login-btn')) showLoginModal('admin');
+            if (target.matches('#owner-login-btn')) showLoginModal('owner');
+            if (target.matches('#logout-btn')) handleLogout();
+            if (target.matches('#save-prices-btn')) {
+                document.querySelectorAll('#price-control-form .price-input').forEach(input => { DB.rooms.find(r => r.id === input.dataset.id).price = parseFloat(input.value); });
+                saveDB(); showAlert('Prices updated!'); renderAllRooms();
+            }
+            if(target.matches('#reset-data-btn')){ if(confirm('DANGER! This will reset all data. Are you sure?')){ localStorage.removeItem('hritisha_hotel_db'); init(); handleLogout(); } }
+
+            const actions = {
+                '.add-customer-btn': { title: 'Add Customer', type: 'customer', fields: c => `<div class="form-group"><label>Name</label><input type="text" name="name" value="${c.name || ''}" required></div><div class="form-group"><label>Email</label><input type="email" name="email" value="${c.email || ''}" required></div>` },
+                '.add-room-btn': { title: 'Add Room', type: 'room', fields: r => `<div class="form-group"><label>Name</label><input type="text" name="name" value="${r.name || ''}" required></div><div class="form-group"><label>Price</label><input type="number" name="price" value="${r.price || ''}" required></div><div class="form-group"><label>Image URL</label><input type="text" name="image" value="${r.image || ''}"></div><div class="form-group" style="grid-column: 1/-1"><label>Features (comma-separated)</label><textarea name="features">${r.features ? r.features.join(', '):''}</textarea></div>` },
+                '.edit-room-btn': { title: 'Edit Room', type: 'room', fields: r => `<div class="form-group"><label>Name</label><input type="text" name="name" value="${r.name || ''}" required></div><div class="form-group"><label>Price</label><input type="number" name="price" value="${r.price || ''}" required></div><div class="form-group"><label>Image URL</label><input type="text" name="image" value="${r.image || ''}"></div><div class="form-group" style="grid-column: 1/-1"><label>Features (comma-separated)</label><textarea name="features">${r.features ? r.features.join(', '):''}</textarea></div>` },
+                '#add-admin-btn': { title: 'Add Admin', type: 'admin', fields: u => `<div class="form-group"><label>Username</label><input type="text" name="username" required></div><div class="form-group"><label>Password</label><input type="password" name="password" required></div>` },
+                '.edit-booking-btn': { title: 'Edit Booking', type: 'booking', fields: b => `<div class="form-group"><label>Status</label><select name="status" required><option value="Pending" ${b.status==='Pending'?'selected':''}>Pending</option><option value="Confirmed" ${b.status==='Confirmed'?'selected':''}>Confirmed</option><option value="Cancelled" ${b.status==='Cancelled'?'selected':''}>Cancelled</option></select></div>` },
+                '.delete-customer-btn': { type: 'delete', collection: 'customers', render: () => { renderAllAdminViews(); renderOwnerTabContent('owner-customers'); }},
+                '.delete-room-btn': { type: 'delete', collection: 'rooms', render: () => { renderAllRooms(); renderAllAdminViews(); renderOwnerTabContent('owner-rooms'); }},
+                '.delete-admin-btn': { type: 'delete', collection: 'users', render: () => renderOwnerTabContent('owner-admins') },
+            };
+            for (const selector in actions) {
+                if (target.matches(selector)) {
+                    const config = actions[selector]; const id = target.dataset.id;
+                    if (config.type === 'delete') {
+                        if (confirm('Are you sure?')) { DB[config.collection] = DB[config.collection].filter(i => i.id !== id); saveDB(); showAlert('Deleted.'); config.render(); }
+                    } else { const item = id ? DB[config.type+'s'].find(i => i.id === id) : {}; showManagementModal({ ...config, id, fields: config.fields(item) }); }
+                    return;
+                }
+            }
+        });
+        
+        function init() {
+            loadDB();
+            // Data Integrity Check: Ensure critical users exist. This is a robust way to fix old data issue.
+            let dbUpdated = false;
+            initialData.users.forEach(essentialUser => {
+                if (!DB.users.find(u => u.username === essentialUser.username)) {
+                    DB.users.push(essentialUser); dbUpdated = true;
+                }
+            });
+            if(dbUpdated) saveDB();
+            
+            renderAllRooms();
+            const userJson = localStorage.getItem('loggedInUser');
+            if(userJson) { loggedInUser = JSON.parse(userJson); updateUIForLogin(); } 
+            else { showView('website'); }
+            
+            // Setup dashboard tabs
+            setupDashboardTabs('admin-dashboard');
+            setupDashboardTabs('owner-dashboard');
+        }
+        init();
+    });
+    </script>
+</body>
+</html>
