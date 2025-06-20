@@ -104,6 +104,11 @@
             cursor: pointer;
         }
 
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
         .navbar .user-info { display: none; align-items: center; flex-wrap: wrap; }
         .navbar .user-info .user-nav { display: flex; align-items: center; }
         .navbar .user-info .user-nav a { margin-left: 20px; font-size: 1.1rem; color: var(--white-color); text-decoration: none; }
@@ -113,6 +118,23 @@
         .navbar .login-buttons { display: flex; align-items: center; flex-wrap: wrap; }
         .navbar .login-buttons .btn { margin-left: 10px; background: rgba(255, 255, 255, 0.1); color: var(--white-color); border: 1px solid var(--white-color); }
         .navbar .login-buttons .btn:hover { background: var(--white-color); color: var(--blue-gradient-start); }
+        
+        .hamburger-menu {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 10px;
+        }
+
+        .hamburger-menu .bar {
+            display: block;
+            width: 28px;
+            height: 3px;
+            margin: 5px auto;
+            background-color: var(--white-color);
+            transition: all 0.3s ease-in-out;
+        }
 
         /* --- HERO SECTION --- */
         .hero {
@@ -202,12 +224,66 @@
 
         /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
-            .navbar { flex-direction: column; align-items: flex-start; padding: 0.5rem 1rem; }
-            .navbar .logo { margin-bottom: 1rem; }
-            .navbar .user-info { width: 100%; justify-content: space-between; }
-            .navbar .user-info .user-nav { margin-bottom: 0.5rem; }
-            .navbar .login-buttons { width: 100%; flex-direction: column; align-items: stretch; gap: 0.5rem; }
-            .navbar .login-buttons .btn { margin: 0; }
+            .navbar {
+                flex-wrap: wrap;
+                padding: 1rem 5%;
+            }
+
+            .hamburger-menu {
+                display: block;
+            }
+
+            /* --- Styles for the open hamburger menu --- */
+            .hamburger-menu.active .bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            .hamburger-menu.active .bar:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger-menu.active .bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .nav-links {
+                display: none; /* Hide by default */
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+                position: absolute;
+                top: 100%; /* Position below the navbar */
+                left: 0;
+                background: var(--blue-gradient-start);
+                padding: 1rem 5%;
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            }
+
+            .nav-links.active {
+                display: flex; /* Show when active */
+            }
+            
+            /* --- Reset styles for items inside the mobile menu --- */
+            .navbar .user-info, .navbar .login-buttons {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+            }
+            .navbar .user-info .user-nav {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+            .navbar .user-info .user-nav a {
+                margin: 0;
+                padding: 1rem 0;
+                text-align: center;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .navbar .user-info #logout-btn, .navbar .login-buttons .btn {
+                margin: 0.5rem 0 0 0;
+                width: 100%;
+            }
             
             .hero-content h1 { font-size: 2.5rem; }
             .hero-content p { font-size: 1.2rem; }
@@ -227,19 +303,26 @@
     <!-- ======================= GLOBAL HEADER ======================= -->
     <header class="navbar">
         <div class="logo">Hritisha Hotels</div>
-        <div class="user-info">
-            <span id="user-welcome-message"></span>
-            <nav class="user-nav">
-                <a href="#" id="view-website-btn">View Website</a>
-                <a href="#" id="view-dashboard-btn">Dashboard</a>
-            </nav>
-            <button class="btn" id="logout-btn">Logout</button>
+        <div class="nav-links">
+            <div class="user-info">
+                <span id="user-welcome-message"></span>
+                <nav class="user-nav">
+                    <a href="#" id="view-website-btn">View Website</a>
+                    <a href="#" id="view-dashboard-btn">Dashboard</a>
+                </nav>
+                <button class="btn" id="logout-btn">Logout</button>
+            </div>
+            <div class="login-buttons">
+                <button class="btn" id="customer-login-btn">Customer Login</button>
+                <button class="btn" id="admin-login-btn">Admin Login</button>
+                <button class="btn" id="owner-login-btn">Owner Login</button>
+            </div>
         </div>
-        <div class="login-buttons">
-            <button class="btn" id="customer-login-btn">Customer Login</button>
-            <button class="btn" id="admin-login-btn">Admin Login</button>
-            <button class="btn" id="owner-login-btn">Owner Login</button>
-        </div>
+        <button class="hamburger-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
     </header>
 
     <!-- ======================= MAIN WEBSITE VIEW ======================= -->
@@ -423,13 +506,27 @@
         function showBookingModal(roomId) {
             const room = DB.rooms.find(r => r.id === roomId);
             const template = document.getElementById('booking-modal-template').content.cloneNode(true);
+            
             template.querySelector('#summary-room-name').textContent = room.name;
             template.querySelector('#summary-room-price').textContent = `₹${room.price.toLocaleString('en-IN')}`;
+            
             if (!loggedInUser || loggedInUser.role !== 'customer') {
-                template.querySelector('#booking-customer-details').innerHTML = `<p style="margin-bottom: 15px; font-size: 0.9em; color: #555;">Enter your details to book. An account will be created for you.</p><div class="form-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 15px;"><div class="form-group"><label>Full Name</label><input type="text" name="name" required></div><div class="form-group"><label>Email</label><input type="email" name="email" required></div></div>`;
+                template.querySelector('#booking-customer-details').innerHTML = `<p style="margin-bottom: 15px; font-size: 0.9em; color: #555;">Enter your details to book. An account will be created for you.</p>
+                <div class="form-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 15px;">
+                    <div class="form-group"><label>Full Name</label><input type="text" name="name" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Mobile Number</label><input type="tel" name="phone" required>
+                </div>`;
             }
+
             const checkInInput = template.querySelector('#booking-check-in');
             const checkOutInput = template.querySelector('#booking-check-out');
+            const totalNightsSpan = template.querySelector('#summary-total-nights');
+            const totalPriceSpan = template.querySelector('#summary-total-price');
+            const bookingForm = template.querySelector('#booking-form');
+
             checkInInput.value = document.getElementById('check-in').value || new Date().toISOString().split('T')[0];
             checkOutInput.value = document.getElementById('check-out').value;
             checkInInput.min = new Date().toISOString().split('T')[0];
@@ -441,13 +538,13 @@
                 if (start && end && end > start) {
                     nights = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
                 }
-                template.querySelector('#summary-total-nights').textContent = `${nights} Night${nights !== 1 ? 's' : ''}`;
-                template.querySelector('#summary-total-price').textContent = `₹${(nights * room.price).toLocaleString('en-IN')}`;
+                totalNightsSpan.textContent = `${nights} Night${nights !== 1 ? 's' : ''}`;
+                totalPriceSpan.textContent = `₹${(nights * room.price).toLocaleString('en-IN')}`;
             };
             
-            template.querySelector('#booking-form').addEventListener('input', updateSummary);
-            updateSummary(); // Initial call
-            template.querySelector('#booking-form').addEventListener('submit', e => handleBookingFormSubmit(e, room));
+            bookingForm.addEventListener('input', updateSummary);
+            updateSummary();
+            bookingForm.addEventListener('submit', e => handleBookingFormSubmit(e, room));
             openModal(template);
         }
 
@@ -467,7 +564,7 @@
                 else {
                     isNewGuest = true; guestEmail = data.email;
                     customerId = generateId('C');
-                    DB.customers.push({ id: customerId, name: data.name, email: data.email, phone: '' });
+                    DB.customers.push({ id: customerId, name: data.name, email: data.email, phone: data.phone || '' });
                     DB.users.push({ id: customerId, username: data.email, password: 'password123', role: 'customer', name: data.name, email: data.email });
                 }
             }
@@ -515,7 +612,7 @@
             if(target.matches('#reset-data-btn')){ if(confirm('DANGER! This will reset all data. Are you sure?')){ localStorage.removeItem('hritisha_hotel_db'); init(); handleLogout(); } }
 
             const actions = {
-                '.add-customer-btn': { title: 'Add Customer', type: 'customer', fields: c => `<div class="form-group"><label>Name</label><input type="text" name="name" value="${c.name || ''}" required></div><div class="form-group"><label>Email</label><input type="email" name="email" value="${c.email || ''}" required></div>` },
+                '.add-customer-btn': { title: 'Add Customer', type: 'customer', fields: c => `<div class="form-group"><label>Name</label><input type="text" name="name" value="${c.name || ''}" required></div><div class="form-group"><label>Email</label><input type="email" name="email" value="${c.email || ''}" required></div><div class="form-group"><label>Phone</label><input type="tel" name="phone" value="${c.phone || ''}"></div>` },
                 '.add-room-btn': { title: 'Add Room', type: 'room', fields: r => `<div class="form-group"><label>Name</label><input type="text" name="name" value="${r.name || ''}" required></div><div class="form-group"><label>Price</label><input type="number" name="price" value="${r.price || ''}" required></div><div class="form-group"><label>Image URL</label><input type="text" name="image" value="${r.image || ''}"></div><div class="form-group" style="grid-column: 1/-1"><label>Features (comma-separated)</label><textarea name="features">${r.features ? r.features.join(', '):''}</textarea></div>` },
                 '.edit-room-btn': { title: 'Edit Room', type: 'room', fields: r => `<div class="form-group"><label>Name</label><input type="text" name="name" value="${r.name || ''}" required></div><div class="form-group"><label>Price</label><input type="number" name="price" value="${r.price || ''}" required></div><div class="form-group"><label>Image URL</label><input type="text" name="image" value="${r.image || ''}"></div><div class="form-group" style="grid-column: 1/-1"><label>Features (comma-separated)</label><textarea name="features">${r.features ? r.features.join(', '):''}</textarea></div>` },
                 '#add-admin-btn': { title: 'Add Admin', type: 'admin', fields: u => `<div class="form-group"><label>Username</label><input type="text" name="username" required></div><div class="form-group"><label>Password</label><input type="password" name="password" required></div>` },
@@ -529,15 +626,95 @@
                     const config = actions[selector]; const id = target.dataset.id;
                     if (config.type === 'delete') {
                         if (confirm('Are you sure?')) { DB[config.collection] = DB[config.collection].filter(i => i.id !== id); saveDB(); showAlert('Deleted.'); config.render(); }
-                    } else { const item = id ? DB[config.type+'s'].find(i => i.id === id) : {}; showManagementModal({ ...config, id, fields: config.fields(item) }); }
+                    } else { const item = id ? DB[(config.type==='admin'?'users':config.type+'s')].find(i => i.id === id) : {}; showManagementModal({ ...config, id, fields: config.fields(item) }); }
                     return;
                 }
             }
         });
         
+        function handleRoomSearch(e) {
+            e.preventDefault();
+            const maxPrice = parseFloat(document.getElementById('max-price').value);
+            let filteredRooms = DB.rooms;
+            if (!isNaN(maxPrice) && maxPrice > 0) {
+                filteredRooms = filteredRooms.filter(room => room.price <= maxPrice);
+            }
+            renderAllRooms(filteredRooms);
+        }
+
+        // --- Mobile Menu Toggle ---
+        function setupMobileMenu() {
+            const hamburger = document.querySelector('.hamburger-menu');
+            const navLinks = document.querySelector('.nav-links');
+            
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+
+            navLinks.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+                    hamburger.classList.remove('active');
+                    navLinks.classList.remove('active');
+                }
+            });
+        }
+
+        // --- FIX: DASHBOARD SEARCH HANDLER ---
+        function handleDashboardSearch(e) {
+            if (e.target.matches('.table-controls input[type="search"]')) {
+                const input = e.target;
+                const searchTerm = input.value.toLowerCase().trim();
+                const table = input.closest('.table-container').querySelector('table');
+                const tableId = table.id;
+
+                let data, rowRenderer, filteredData;
+
+                if (tableId.includes('bookings')) {
+                    data = DB.bookings;
+                    rowRenderer = bookingRow;
+                    filteredData = data.filter(b => {
+                        const c = DB.customers.find(cust => cust.id === b.customerId) || {};
+                        const r = DB.rooms.find(room => room.id === b.roomId) || {};
+                        return b.id.toLowerCase().includes(searchTerm) ||
+                            (c.name && c.name.toLowerCase().includes(searchTerm)) ||
+                            (r.name && r.name.toLowerCase().includes(searchTerm)) ||
+                            b.status.toLowerCase().includes(searchTerm);
+                    });
+                } else if (tableId.includes('customers')) {
+                    data = DB.customers;
+                    rowRenderer = customerRow;
+                    filteredData = data.filter(c => {
+                        return c.id.toLowerCase().includes(searchTerm) ||
+                            c.name.toLowerCase().includes(searchTerm) ||
+                            c.email.toLowerCase().includes(searchTerm) ||
+                            (c.phone && c.phone.toLowerCase().includes(searchTerm));
+                    });
+                } else if (tableId.includes('rooms')) {
+                    data = DB.rooms;
+                    rowRenderer = roomRow;
+                    filteredData = data.filter(r => {
+                        return r.name.toLowerCase().includes(searchTerm) ||
+                            r.price.toString().includes(searchTerm) ||
+                            r.features.join(' ').toLowerCase().includes(searchTerm);
+                    });
+                } else if (tableId.includes('admins')) {
+                    data = DB.users.filter(u => ['admin', 'owner'].includes(u.role));
+                    rowRenderer = adminRow;
+                    filteredData = data.filter(u => {
+                        return u.username.toLowerCase().includes(searchTerm) ||
+                            u.role.toLowerCase().includes(searchTerm);
+                    });
+                }
+
+                if (filteredData && rowRenderer) {
+                    renderTable(tableId, filteredData, rowRenderer);
+                }
+            }
+        }
+        
         function init() {
             loadDB();
-            // Data Integrity Check: Ensure critical users exist. This is a robust way to fix old data issue.
             let dbUpdated = false;
             initialData.users.forEach(essentialUser => {
                 if (!DB.users.find(u => u.username === essentialUser.username)) {
@@ -551,9 +728,12 @@
             if(userJson) { loggedInUser = JSON.parse(userJson); updateUIForLogin(); } 
             else { showView('website'); }
             
-            // Setup dashboard tabs
             setupDashboardTabs('admin-dashboard');
             setupDashboardTabs('owner-dashboard');
+            document.getElementById('search-form').addEventListener('submit', handleRoomSearch);
+            setupMobileMenu();
+            // FIX: Attach the dashboard search handler
+            document.getElementById('dashboard-container').addEventListener('input', handleDashboardSearch);
         }
         init();
     });
